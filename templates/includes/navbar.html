@@ -83,23 +83,61 @@
                         <li><a href="http://127.0.0.1:8001/categories">
                             <strong>View all <i class="fa fa-long-arrow-right"></i></strong>
                         </a></li>
-                    </ul><!-- DROPDOWN MENU -->
+                    </ul>
 
-                </li><!-- Categories -->
+                </li>
 
                 <li>
                     <a class="text-uppercase font-default" href="http://127.0.0.1:8001/page/how-it-works">How it
                         works</a>
                 </li>
 
+                {% if request.user.is_authenticated %}
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" data-toggle="dropdown"
+                           class="userAvatar myprofile dropdown-toggle">
+                            <img src="https://fundme.miguelvasquez.net/public/avatar/41567519052lgueumqvlfg5zh4.jpg"
+                                 alt="User" class="img-circle avatarUser" width="21" height="21"/>
+                            <span class="title-dropdown font-default"><strong>My Profile</strong></span>
+                            <i class="ion-chevron-down margin-lft5"></i>
+                        </a>
+                        <ul class="dropdown-menu arrow-up nav-session" role="menu" aria-labelledby="dropdownMenu4">
+                            <li>
+                                <a href="#" class="text-overflow">
+                                    <i class="icon icon-dashboard myicon-right"></i> My Dashboard
+                                </a>
+                            </li>
 
-                <li><a class="text-uppercase font-default" href="http://127.0.0.1:8001/login">Login</a></li>
+                            <li>
+                                <a href="#" class="text-overflow">
+                                    <i class="fa fa-heart myicon-right"></i> Likes
+                                </a>
+                            </li>
 
-                <li>
-                    <a class="log-in custom-rounded text-uppercase font-default" href="http://127.0.0.1:8001/register">
-                        <i class="glyphicon glyphicon-user"></i> Sign up
-                    </a>
-                </li>
+                            <li>
+                                <a href="#" class="text-overflow">
+                                    <i class="glyphicon glyphicon-cog myicon-right"></i> Account Settings
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{% url 'accounts:logout' %}" class="logout text-overflow">
+                                    <i class="glyphicon glyphicon-log-out myicon-right"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                {% else %}
+                    <li><a class="text-uppercase font-default" href="{% url 'accounts:login' %}">Login</a></li>
+
+                    <li>
+                        <a class="log-in custom-rounded text-uppercase font-default"
+                           href="{% url 'accounts:register' %}">
+                            <i class="glyphicon glyphicon-user"></i> Sign up
+                        </a>
+                    </li>
+                {% endif %}
 
             </ul>
 

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    <div class="jumbotron md index-header jumbotron_set jumbotron-cover">
+        <div class="container wrap-jumbotron position-relative">
+            <h1 class="title-site">Sign up</h1>
+            <p class="subtitle-site"><strong>Fundme | Crowdfunding Platform</strong></p>
+        </div>
+    </div>
+
+    <div class="container margin-bottom-40">
+
+        <div class="row">
+            <!-- Col MD -->
+            <div class="col-md-12">
+
+                <h2 class="text-center position-relative">Sign up</h2>
+
+                <div class="login-form">
+
+                    <form method="post" name="form" id="signup_form">
+
+                        {% csrf_token %}
+
+                        <div class="form-group has-feedback">
+                            <input type="text" class="form-control login-field custom-rounded"
+                                   name="username" placeholder="Username" title="Username"
+                                   autocomplete="off">
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="text" class="form-control login-field custom-rounded"
+                                   name="email" placeholder="Email"
+                                   title="Email" autocomplete="off">
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="password" class="form-control login-field custom-rounded" name="password1"
+                                   placeholder="Password" title="Password"
+                                   autocomplete="off">
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <input type="password" class="form-control" name="password2"
+                                   placeholder="Confirm Password"
+                                   title="Confirm Password" autocomplete="off">
+                            <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+                        </div>
+
+                        <div class="form-group has-feedback">
+                            <select name="country" class="form-control">
+                                <option value="">Select your country</option>
+                                {% for country in countries %}
+                                    <option value="{{ country.id }}">{{ country.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button type="submit" id="buttonSubmit" class="btn btn-block btn-lg btn-main custom-rounded">
+                            Sign up
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
