@@ -43,7 +43,6 @@ class RegisterView(CreateView):
             user.save()
             return redirect('accounts:login')
         else:
-            print(user_form.errors)
             return render(request, 'accounts/register.html', {'form': user_form})
 
 

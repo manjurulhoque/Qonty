@@ -20,7 +20,6 @@ class User(AbstractUser):
                               })
     status = models.CharField(max_length=20, default='active')
     avatar = models.CharField(max_length=30, default="default.jpg")
-    is_admin = models.BooleanField(default=False)
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
 
     USERNAME_FIELD = "email"

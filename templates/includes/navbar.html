@@ -88,8 +88,7 @@
                 </li>
 
                 <li>
-                    <a class="text-uppercase font-default" href="http://127.0.0.1:8001/page/how-it-works">How it
-                        works</a>
+                    <a class="text-uppercase font-default" href="http://127.0.0.1:8001/page/how-it-works">How it works</a>
                 </li>
 
                 {% if request.user.is_authenticated %}
@@ -126,6 +125,12 @@
                                 </a>
                             </li>
                         </ul>
+                    </li>
+
+                    <li>
+                        <a class="log-in custom-rounded" href="{% url 'campaign:campaign-create' %}" title="Create Campaign">
+                            <i class="glyphicon glyphicon-edit"></i> <strong>Create Campaign</strong>
+                        </a>
                     </li>
 
                 {% else %}

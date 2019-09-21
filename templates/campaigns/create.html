@@ -1,0 +1,268 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'plugins/datepicker/datepicker3.css' %}" type="text/css">
+{% endblock %}
+
+{% block content %}
+
+    <div class="jumbotron md index-header jumbotron_set jumbotron-cover">
+        <div class="container wrap-jumbotron position-relative">
+            <h2 class="title-site">Create Campaign</h2>
+        </div>
+    </div>
+
+    <div class="container margin-bottom-40 padding-top-40">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="wrap-center center-block">
+                    <form method="POST" action="" enctype="multipart/form-data" id="formUpload">
+                        {% csrf_token %}
+
+                        <div class="filer-input-dragDrop position-relative" id="draggable">
+                            <input type="file" accept="image/*" name="image" id="filePhoto">
+
+                            <div class="previewPhoto">
+
+                                <div class="btn btn-danger btn-sm btn-remove-photo" id="removePhoto">
+                                    <i class="fa fa-trash myicon-right"></i> Delete
+                                </div>
+
+                            </div>
+
+                            <div class="filer-input-inner">
+                                <div class="filer-input-icon">
+                                    <i class="fa fa-cloud-upload"></i>
+                                </div>
+                                <div class="filer-input-text">
+                                    <h3 class="margin-bottom-10">Click to select an image</h3>
+                                    <h3>The image must be greater than or equal to: 1MB </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Start Form Group -->
+                        <div class="form-group">
+                            <label>Campaign Title</label>
+                            <input type="text" value="" name="title" id="title" required class="form-control" placeholder="Campaign Title">
+                        </div><!-- /.form-group-->
+
+                        <!-- Start Form Group -->
+                        <div class="form-group">
+                            <label>Choose a category</label>
+                            <select name="category" class="form-control">
+                                <option value="">Select one</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Campaign Goal</label>
+                            <div class="input-group">
+                                <div class="input-group-addon addon-dollar">$</div>
+                                <input type="number" min="1" class="form-control" name="goal" id="onlyNumber" value="" placeholder="10000">
+                            </div>
+                        </div>
+
+                        <!-- Start Form Group -->
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" value="" name="location" class="form-control" placeholder="Location">
+                        </div><!-- /.form-group-->
+
+                        <!-- Start Form Group -->
+                        <div class="form-group">
+                            <label>Campaign deadline</label>
+                            <div class="input-group">
+                                <div class="input-group-addon addon-dollar"><i class="fa fa-calendar"></i></div>
+                                <input type="text" value="" id="datepicker" name="deadline" class="form-control" placeholder="Campaign deadline">
+                            </div>
+                            <span class="help-block">* The minimum duration is 7 days, If you want your campaign does not have a deadline, leave blank, it can not be changed.</span>
+
+                        </div><!-- /.form-group-->
+
+
+                        <div class="form-group">
+                            <label>About the campaign</label>
+                            <textarea name="description" rows="4" id="description" class="form-control tinymce-txt" placeholder="About the campaign"></textarea>
+                        </div>
+
+                        <!-- Alert -->
+                        <div class="alert alert-danger display-none" id="dangerAlert">
+                            <ul class="list-unstyled" id="showErrors"></ul>
+                        </div><!-- Alert -->
+
+                        <div class="box-footer">
+                            <hr/>
+                            <button type="submit" id="buttonFormSubmit" class="btn btn-block btn-lg btn-main custom-rounded">Create Campaign</button>
+                        </div><!-- /.box-footer -->
+                    </form>
+
+                </div><!-- wrap-center -->
+            </div><!-- col-md-12-->
+
+        </div><!-- row -->
+    </div><!-- container -->
+
+{% endblock %}
+
+{% block javascript %}
+
+
+    <script src="{% static 'plugins/iCheck/icheck.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'plugins/tinymce/tinymce.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'plugins/datepicker/bootstrap-datepicker.js' %}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+        //Date picker
+        $('#datepicker').datepicker({
+            autoclose: true,
+            format: 'dd-mm-yyyy',
+            startDate: '+7d',
+            language: 'en'
+        });
+
+        $(document).ready(function () {
+
+            $("#onlyNumber").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13]) !== -1 ||
+                    // Allow: Ctrl+A, Command+A
+                    (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    // Allow: home, end, left, right, down, up
+                    (e.keyCode >= 35 && e.keyCode <= 40)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-red',
+                radioClass: 'iradio_square-red',
+                increaseArea: '20%' // optional
+            });
+
+        });
+
+        //Flat red color scheme for iCheck
+        $('input[type="radio"]').iCheck({
+            radioClass: 'iradio_flat-red'
+        });
+
+        $('#removePhoto').click(function () {
+            $('#filePhoto').val('');
+            $('.previewPhoto').css({backgroundImage: 'none'}).hide();
+            $('.filer-input-dragDrop').removeClass('hoverClass');
+        });
+
+        $("#filePhoto").on('change', function () {
+
+            var loaded = false;
+            if (window.File && window.FileReader && window.FileList && window.Blob) {
+                if ($(this).val()) { //check empty input filed
+                    oFReader = new FileReader(), rFilter = /^(?:image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/png|image)$/i;
+                    if ($(this)[0].files.length === 0) {
+                        return
+                    }
+
+
+                    var oFile = $(this)[0].files[0];
+                    var fsize = $(this)[0].files[0].size; //get file size
+                    var ftype = $(this)[0].files[0].type; // get file type
+
+
+                    if (!rFilter.test(oFile.type)) {
+                        $('#filePhoto').val('');
+                        $('.popout').addClass('popout-error').html("Invalid format JPG, GIF and PNG format permitted.").fadeIn(500).delay(5000).fadeOut();
+                        return false;
+                    }
+
+                    let allowed_file_size = 2048 * 1024;
+
+                    if (fsize > allowed_file_size) {
+                        $('#filePhoto').val('');
+                        $('.popout').addClass('popout-error').html("The image must be greater than or equal to: 5MB").fadeIn(500).delay(5000).fadeOut();
+                        return false;
+                    }
+                    oFReader.onload = function (e) {
+
+                        var image = new Image();
+                        image.src = oFReader.result;
+
+                        image.onload = function () {
+
+                            if (image.width < 300) {
+                                $('#filePhoto').val('');
+                                $('.popout').addClass('popout-error').html("The image must be greater than, or equal to 300 px in width").fadeIn(500).delay(5000).fadeOut();
+                                return false;
+                            }
+
+                            if (image.height < 200) {
+                                $('#filePhoto').val('');
+                                $('.popout').addClass('popout-error').html("The image must be greater than, or equal to 200 px in height").fadeIn(500).delay(5000).fadeOut();
+                                return false;
+                            }
+
+                            $('.previewPhoto').css({backgroundImage: 'url(' + e.target.result + ')'}).show();
+                            $('.filer-input-dragDrop').addClass('hoverClass');
+                            var _filname = oFile.name;
+                            var fileName = _filname.substr(0, _filname.lastIndexOf('.'));
+                        };// <<--- image.onload
+                    };
+
+                    oFReader.readAsDataURL($(this)[0].files[0]);
+
+                }
+            } else {
+                $('.popout').html('Can\'t upload! Your browser does not support File API! Try again with modern browsers like Chrome or Firefox.').fadeIn(500).delay(5000).fadeOut();
+                return false;
+            }
+        });
+
+        $('input[type="file"]').attr('title', window.URL ? ' ' : '');
+
+
+        function initTinymce() {
+            tinymce.remove('.tinymce-txt');
+            tinymce.init({
+                selector: '.tinymce-txt',
+                relative_urls: false,
+                resize: true,
+                menubar: false,
+                statusbar: false,
+                forced_root_block: false,
+                extended_valid_elements: "span[!class]",
+                //visualblocks_default_state: true,
+                setup: function (editor) {
+
+                    editor.on('change', function () {
+                        editor.save();
+                    });
+                },
+                theme: 'modern',
+                height: 150,
+                plugins: [
+                    'advlist autolink autoresize lists link image charmap preview hr anchor pagebreak', //image
+                    'searchreplace wordcount visualblocks visualchars code fullscreen',
+                    'insertdatetime media nonbreaking save code contextmenu directionality', //
+                    'emoticons template paste textcolor colorpicker textpattern ' //imagetools
+                ],
+                toolbar1: 'undo redo | bold italic underline strikethrough charmap | bullist numlist  | link | image | media',
+                image_advtab: true,
+            });
+
+        }
+
+        initTinymce();
+
+    </script>
+{% endblock %}
