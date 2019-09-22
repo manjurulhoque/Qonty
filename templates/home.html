@@ -21,116 +21,80 @@
             </h5>
         </div>
 
-        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 row-margin-20">
-            <a href="http://127.0.0.1:8001/category/Animals">
-                <img class="img-responsive btn-block custom-rounded"
-                     src="http://127.0.0.1:8001/public/img-category/default.jpg" alt="Animals">
-            </a>
-
-            <h1 class="title-services">
+        {% for category in categories %}
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 row-margin-20">
                 <a href="http://127.0.0.1:8001/category/Animals">
-                    Animals (0)
+                    <img class="img-responsive btn-block custom-rounded"
+                         src="{{ category.category_image }}" alt="Animals">
                 </a>
-            </h1>
-        </div><!-- col-md-3 row-margin-20 -->
 
-        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 row-margin-20">
-            <a href="http://127.0.0.1:8001/category/Business">
-                <img class="img-responsive btn-block custom-rounded"
-                     src="http://127.0.0.1:8001/public/img-category/default.jpg" alt="Business">
-            </a>
-
-            <h1 class="title-services">
-                <a href="http://127.0.0.1:8001/category/Business">
-                    Business (0)
-                </a>
-            </h1>
-        </div><!-- col-md-3 row-margin-20 -->
-
-        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 row-margin-20">
-            <a href="http://127.0.0.1:8001/category/Charity">
-                <img class="img-responsive btn-block custom-rounded"
-                     src="http://127.0.0.1:8001/public/img-category/default.jpg" alt="Charity">
-            </a>
-
-            <h1 class="title-services">
-                <a href="http://127.0.0.1:8001/category/Charity">
-                    Charity (0)
-                </a>
-            </h1>
-        </div><!-- col-md-3 row-margin-20 -->
-
-        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 row-margin-20">
-            <a href="http://127.0.0.1:8001/category/Community">
-                <img class="img-responsive btn-block custom-rounded"
-                     src="http://127.0.0.1:8001/public/img-category/default.jpg" alt="Community">
-            </a>
-
-            <h1 class="title-services">
-                <a href="http://127.0.0.1:8001/category/Community">
-                    Community (0)
-                </a>
-            </h1>
-        </div><!-- col-md-3 row-margin-20 -->
+                <h1 class="title-services">
+                    <a href="http://127.0.0.1:8001/category/Animals">
+                        {{ category.name }} ({{ category.campaign_set.count }})
+                    </a>
+                </h1>
+            </div>
+        {% endfor %}
 
     </div>
 
-    {#    If campaign#}
-    <div class="container margin-bottom-40">
-        <div class="col-md-12 btn-block margin-bottom-40">
-            <h1 class="btn-block text-center class-montserrat margin-bottom-zero none-overflow">
-                Campaigns</h1>
-            <h5 class="btn-block text-center class-montserrat subtitle-color">Recent Campaigns</h5>
-        </div>
+    {% if campaigns.count > 0 %}
 
-        <div class="margin-bottom-30">
-            Include Campaign
-        </div>
-
-        <div class="row margin-bottom-40">
-
-            <div class="container">
-                <div class="col-md-4 border-stats">
-                    <h1 class="btn-block text-center class-montserrat margin-bottom-zero none-overflow"><span
-                            class=".numbers-with-commas counter">899</span>
-                    </h1>
-                    <h5 class="btn-block text-center class-montserrat subtitle-color text-uppercase">
-                        Members</h5>
-                </div><!-- col-md-3 -->
-
-                <div class="col-md-4 border-stats">
-                    <h1 class="btn-block text-center class-montserrat margin-bottom-zero none-overflow"><span
-                            class=".numbers-with-commas counter">661</span>
-                    </h1>
-                    <h5 class="btn-block text-center class-montserrat subtitle-color text-uppercase">CAMPAIGNS</h5>
-                </div><!-- col-md-3 -->
-
-                <div class="col-md-4 border-stats">
-                    <h1 class="btn-block text-center class-montserrat margin-bottom-zero none-overflow">
-                        $1,630,202</h1>
-                    <h5 class="btn-block text-center class-montserrat subtitle-color text-uppercase">
-                        FUNDS RAISED</h5>
-                </div><!-- col-md-3 -->
-
-            </div><!-- row -->
-        </div>
-
-    </div><!-- container wrap-ui -->
-
-    {#    else#}
-    <div class="container margin-bottom-40">
-        <div class="margin-bottom-30">
-            <div class="btn-block text-center margin-top-40">
-                <i class="ion ion-speakerphone ico-no-result"></i>
+        <div class="container margin-bottom-40">
+            <div class="col-md-12 btn-block margin-bottom-40">
+                <h1 class="btn-block text-center class-montserrat margin-bottom-zero none-overflow">Campaigns</h1>
+                <h5 class="btn-block text-center class-montserrat subtitle-color">Recent Campaigns</h5>
             </div>
 
-            <h3 class="margin-top-none text-center no-result no-result-mg">
-                Has not been created any campaign
-            </h3>
-        </div>
-    </div>
-    {#    endif#}
+            <div class="margin-bottom-30">
+                {% for campaign in campaigns %}
+                    {% include "includes/campaign.html" with campaign=campaign %}
+                {% endfor %}
+            </div>
 
+            <div class="row margin-bottom-40">
+
+                <div class="container">
+                    <div class="col-md-4 border-stats">
+                        <h1 class="btn-block text-center class-montserrat margin-bottom-zero none-overflow"><span
+                                class=".numbers-with-commas counter">899</span>
+                        </h1>
+                        <h5 class="btn-block text-center class-montserrat subtitle-color text-uppercase">
+                            Members</h5>
+                    </div><!-- col-md-3 -->
+
+                    <div class="col-md-4 border-stats">
+                        <h1 class="btn-block text-center class-montserrat margin-bottom-zero none-overflow"><span
+                                class=".numbers-with-commas counter">661</span>
+                        </h1>
+                        <h5 class="btn-block text-center class-montserrat subtitle-color text-uppercase">CAMPAIGNS</h5>
+                    </div><!-- col-md-3 -->
+
+                    <div class="col-md-4 border-stats">
+                        <h1 class="btn-block text-center class-montserrat margin-bottom-zero none-overflow">
+                            $1,630,202</h1>
+                        <h5 class="btn-block text-center class-montserrat subtitle-color text-uppercase">
+                            FUNDS RAISED</h5>
+                    </div><!-- col-md-3 -->
+
+                </div><!-- row -->
+            </div>
+
+        </div><!-- container wrap-ui -->
+
+    {% else %}
+        <div class="container margin-bottom-40">
+            <div class="margin-bottom-30">
+                <div class="btn-block text-center margin-top-40">
+                    <i class="ion ion-speakerphone ico-no-result"></i>
+                </div>
+
+                <h3 class="margin-top-none text-center no-result no-result-mg">
+                    Has not been created any campaign
+                </h3>
+            </div>
+        </div>
+    {% endif %}
 
 
     <div class="jumbotron jumbotron-bottom margin-bottom-zero jumbotron-cover">

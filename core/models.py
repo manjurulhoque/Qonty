@@ -1,3 +1,4 @@
+import os
 from django.db import models
 
 
@@ -16,3 +17,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def category_image(self):
+        if os.path.exists(self.image.url):
+            return self.image.url
+        return "/media/categories/default.png"

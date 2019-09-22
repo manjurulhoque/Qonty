@@ -1,0 +1,77 @@
+<div class="col-xs-12 col-sm-6 col-md-3 col-thumb">
+    <div class="thumbnail padding-top-zero">
+
+        <a class="position-relative btn-block img-grid" href="#">
+
+            {% if campaign.featured %}
+                <span class="box-featured" title="Featured Campaign">
+                    <i class="fa fa-trophy"></i>
+                </span>
+            {% endif %}
+
+            <img title="{{ campaign.title }}" src="{{ campaign.image.url }}" class="image-url img-responsive btn-block radius-image"/>
+        </a>
+
+        <div class="caption">
+            <h1 class="title-campaigns font-default">
+                <a title="{{ campaign.title }}" class="item-link" href="#">
+                    {{ campaign.title }}
+                </a>
+            </h1>
+
+            <p class="desc-campaigns">
+                {% if campaign.user %}
+                    <img src="{{ campaign.image.url }}" width="20" height="20" class="img-circle avatar-campaign"/> {{ campaign.user.username }}
+                {% else %}
+                    <img src="" width="20" height="20" class="img-circle avatar-campaign"/> User not available
+                {% endif %}
+            </p>
+
+            <p class="desc-campaigns text-overflow">
+                {{ campaign.description.strip|safe }}
+            </p>
+
+            <p class="desc-campaigns">
+              <span class="stats-campaigns margin-bottom-zero">
+
+                <em>
+                  {% if campaign.deadline %}
+                      {% if campaign.days_remaining > 0 %}
+                          <strong>{{ campaign.days_remaining }}</strong> days left
+                      {% elif campaign.days_remaining == 0 %}
+                          <strong>Last Day</strong>
+                      {% else %}
+                          <strong class="text-danger">No time anymore</strong>
+                      {% endif %}
+
+                  {% endif %}
+
+                    <strong class="text-danger">Campaign Ended</strong>
+
+                    <strong>No Deadline</strong>
+                </em>
+
+              </span>
+
+                <span class="stats-campaigns">
+                    <span class="pull-left">
+                        <strong>400</strong>
+                        Raised
+                    </span>
+                    <span class="pull-right">
+                        <strong>40%</strong>
+                    </span>
+                </span>
+
+                <span class="progress">
+                    <span class="percentage" style="width: 40%" aria-valuemin="0" aria-valuemax="100" role="progressbar"></span>
+                </span>
+            </p>
+
+            <h6 class="margin-bottom-zero">
+                <em><strong>Goal {{ campaign.goal }}</strong></em>
+            </h6>
+
+        </div><!-- /caption -->
+    </div><!-- /thumbnail -->
+</div><!-- /col-sm-6 col-md-4 -->

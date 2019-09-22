@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.utils.timezone import now
 
@@ -16,3 +18,7 @@ class Campaign(models.Model):
     goal = models.IntegerField()
     location = models.CharField(max_length=150)
     deadline = models.DateField()
+
+    def days_remaining(self):
+        delta = datetime.now().date() - self.deadline
+        return delta.days
