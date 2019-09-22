@@ -1,5 +1,5 @@
+import uuid
 from datetime import datetime
-
 from django.db import models
 from django.utils.timezone import now
 
@@ -8,6 +8,7 @@ from core.models import Category
 
 
 class Campaign(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)

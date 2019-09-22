@@ -1,5 +1,5 @@
 from django.conf.urls.static import static
-from django.urls import path
+from django.urls import path, include
 
 from qonty import settings
 from .views import *
@@ -8,6 +8,8 @@ app_name = "core"
 
 urlpatterns = [
     path('', HomeView.as_view(), name="home"),
+    path('categories', CategoryListView.as_view(), name="categories"),
+    path('campaigns-by-category/<int:pk>', CampaignsByCategoryView.as_view(), name="campaigns-by-category"),
 ]
 
 if settings.DEBUG:
