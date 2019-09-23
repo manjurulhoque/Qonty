@@ -21,5 +21,5 @@ class Campaign(models.Model):
     deadline = models.DateField()
 
     def days_remaining(self):
-        delta = datetime.now().date() - self.deadline
+        delta = self.deadline - datetime.now().date()
         return delta.days

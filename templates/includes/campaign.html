@@ -14,7 +14,7 @@
 
         <div class="caption">
             <h1 class="title-campaigns font-default">
-                <a title="{{ campaign.title }}" class="item-link" href="#">
+                <a title="{{ campaign.title }}" class="item-link" href="{% url 'campaign:campaign-detail' campaign.id %}">
                     {{ campaign.title }}
                 </a>
             </h1>

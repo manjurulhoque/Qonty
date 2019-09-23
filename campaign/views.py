@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from .forms import *
 
@@ -47,3 +47,9 @@ class CampaignCreateView(CreateView):
     #     kwargs.update({'user': self.request.user})
     #     kwargs.update({'status': 'pending'})
     #     return kwargs
+
+
+class CampaignDetailView(DetailView):
+    model = Campaign
+    template_name = "campaigns/details.html"
+    context_object_name = "campaign"
