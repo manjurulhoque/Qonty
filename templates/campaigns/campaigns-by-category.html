@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="jumbotron md index-header jumbotron_set jumbotron-cover">
+        <div class="container wrap-jumbotron position-relative">
+            <h2 class="title-site">{{ category.name }}</h2>
+
+            <p class="subtitle-site"><strong>({{ category.campaign_set.count }}) campaigns available in this category</strong></p>
+        </div>
+    </div>
+
+    <div class="container margin-bottom-40">
+
+        <!-- Col MD -->
+        <div class="col-md-12 margin-top-20 margin-bottom-20">
+
+            {% if category.campaign_set.count > 0 %}
+                {% for campaign in category.campaign_set.all %}
+                    {% include 'includes/campaign.html' %}
+                {% endfor %}
+            {% else %}
+                <div class="btn-block text-center">
+                    <i class="icon-search ico-no-result"></i>
+                </div>
+
+                <h3 class="margin-top-none text-center no-result no-result-mg">
+                    No results have been found
+                </h3>
+            {% endif %}
+
+        </div><!-- /COL MD -->
+    </div><!-- container wrap-ui -->
+
+{% endblock %}
