@@ -274,7 +274,7 @@ $('#btnSearch_2').click(function (e) {
 
 $(document).ready(function () {
 
-    jQuery(".timeAgo").timeago();
+    // jQuery(".timeAgo").timeago();
 
 //================= * Remove focus on click * ===================//
     $('.btn, li.dropdown a').click(function () {

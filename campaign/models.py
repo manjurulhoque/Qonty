@@ -1,6 +1,9 @@
+import hashlib
 import uuid
 from datetime import datetime
 from django.db import models
+from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.utils.http import urlencode
 from django.utils.timezone import now
 
 from accounts.models import User
@@ -41,3 +44,21 @@ class Donation(models.Model):
     def __str__(self):
         return "{} donate {}".format(self.fullname, self.donation)
 
+    @property
+    def name(self):
+        return self.fullname if self.anonymous == 0 else "Anonymous"
+
+    @property
+    def avatar(self):
+        default = static('img/default.jpg')
+        size = 40
+        query_string = urlencode({
+            's': str(size),
+        })
+
+        url_base = "https://www.gravatar.com/"
+        email_hash = hashlib.md5(self.email.strip().lower().encode("utf-8")).hexdigest()
+
+        # Build url
+        url = '{base}avatar/{hash}.jpg?{qs}'.format(base=url_base, hash=email_hash, qs=query_string)
+        return default if self.anonymous == 0 else url

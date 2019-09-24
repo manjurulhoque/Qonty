@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView
+from django.utils.translation import gettext as _
 
 from core.models import Country
 from .forms import *
@@ -54,6 +55,7 @@ class CampaignDetailView(DetailView):
     model = Campaign
     template_name = "campaigns/details.html"
     context_object_name = "campaign"
+    queryset = Campaign.objects.prefetch_related("donation_set").prefetch_related("user")
 
 
 class DonationView(CreateView):

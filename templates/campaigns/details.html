@@ -64,8 +64,7 @@
 
             <ul class="nav nav-tabs nav-justified margin-bottom-20">
                 <li class="active"><a href="#desc" aria-controls="home" role="tab" data-toggle="tab" class="font-default"><strong>The Story</strong></a></li>
-                <li><a href="#donations" aria-controls="home" role="tab" data-toggle="tab" class="font-default"><strong>Donations</strong> <span class="badge update-ico">0</a></span></li>
-                <li><a href="#updates" aria-controls="home" role="tab" data-toggle="tab" class="font-default"><strong>Updates</strong> <span class="badge update-ico">0</span></a></li>
+                <li><a href="#donations" aria-controls="home" role="tab" data-toggle="tab" class="font-default"><strong>Donations</strong> <span class="badge update-ico">{{ campaign.donation_set.count }}</span></a></li>
             </ul>
 
             <div class="tab-content">
@@ -75,21 +74,39 @@
 
                 <div role="tabpanel" class="tab-pane fade in description wordBreak" id="donations">
 
-                    <span class="btn-block text-center">
-		    			<i class="ion ion-cash ico-no-result"></i>
-		    		</span>
-                    <span class="text-center btn-block">There are no donations</span>
+                    {% if campaign.donation_set.count == 0 %}
+                        <span class="btn-block text-center">
+		    			    <i class="ion ion-cash ico-no-result"></i>
+		    		    </span>
+                        <span class="text-center btn-block">There are no donations</span>
+                    {% else %}
+                        <ul class="list-group" id="listDonations">
+
+                            {% for donation in campaign.donation_set.all %}
+
+                                <li class="list-group-item">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <img class="media-object img-circle imgDonations" src="{{ donation.avatar }}" width="40" height="40">
+                                        </div>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">{{ donation.name }}</h4>
+                                            <span class="btn-block recent-donation-amount font-default">
+                                                ${{ donation.donation }}
+                                            </span>
+                                            {% if donation.comment %}
+                                                <p class="margin-bottom-5">{{ donation.comment }}</p>
+                                            {% endif %}
+                                            <small class="btn-block timeAgo text-muted" data="{{ donation.date|date }}">{{ donation.date|date }}</small>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
 
-                <div role="tabpanel" class="tab-pane fade description wordBreak margin-top-30" id="updates">
-
-					<span class="btn-block text-center">
-	    			<i class="icon-history ico-no-result"></i>
-	    		</span>
-                    <span class="text-center btn-block">No results have been found</span>
-
-
-                </div>
             </div>
 
         </div>
@@ -129,7 +146,7 @@
             <div class="panel panel-default">
                 <div class="panel-body text-center">
 
-                    <a href="https://fundme.miguelvasquez.net/login" class="btnLike">
+                    <a href="#" class="btnLike">
                         <h3 class="btn-block text-center margin-zero"><i class="fa fa-heart-o"></i> <span id="countLikes">0</span></h3>
                     </a>
 
