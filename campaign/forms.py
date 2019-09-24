@@ -1,4 +1,6 @@
 from django import forms
+from django.core.exceptions import ValidationError
+
 from .models import *
 
 
@@ -18,3 +20,15 @@ class CampaignForm(forms.ModelForm):
 
     def clean_status(self):
         return self.status
+
+
+class DonationForm(forms.ModelForm):
+    class Meta:
+        model = Donation
+        exclude = ('date', 'approved', 'campaign')
+
+    def clean_donation(self):
+        amount = self.cleaned_data['donation']
+        if amount < 5:
+            raise ValidationError("Amount must be greater or equal to $5")
+        return amount

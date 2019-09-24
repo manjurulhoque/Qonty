@@ -845,40 +845,10 @@ $(document).ready(function () {
                 dataType: 'json',
                 success: function (result) {
 
-                    //===== SUCCESS =====//
-                    if (result.success != false && result.formPP) {
-
-                        $(result.formPP).appendTo("body");
-                        $("#form_pp").submit();
-
-                    }//<-- e
-
+                    if (result.success === true) {
+                        window.location.href = result.url;
+                    }
                     else if (result.success != false && result.stripeTrue == true) {
-
-                        var handler = StripeCheckout.configure({
-                            key: result.key,
-                            locale: 'auto',
-                            token: function (token) {
-                                // You can access the token ID with `token.id`.
-                                // Get the token ID to your server-side code for use.
-                                var $input = $('<input type=hidden name=stripeToken />').val(token.id);
-                                $('#formDonation').append($input).submit();
-                            }
-                        });
-
-                        // Open Checkout with further options:
-                        handler.open({
-                            email: result.email,
-                            name: result.name,
-                            description: result.description,
-                            currency: result.currency,
-                            amount: result.amount
-                        });
-
-                        // Close Checkout on page navigation:
-                        $(window).on('popstate', function () {
-                            handler.close();
-                        });
 
                         $('.wrap-loader').hide();
                         element.removeAttr('disabled');
@@ -888,9 +858,9 @@ $(document).ready(function () {
                     } else if (result.success != false && result.bankTransfer == true) {
                         window.location.href = result.url;
                     } else {
-                        var error = '';
+                        let error = '';
                         for ($key in result.errors) {
-                            error += '<li><i class="glyphicon glyphicon-remove myicon-right"></i> ' + result.errors[$key] + '</li>';
+                            error += '<li><i class="glyphicon glyphicon-remove myicon-right"></i> ' + $key + ': ' + result.errors[$key] + '</li>';
                         }
                         $('#showErrorsDonation').html(error);
                         $('#errorDonation').fadeIn(500);

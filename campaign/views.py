@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView
 
+from core.models import Country
 from .forms import *
 
 
@@ -53,3 +54,45 @@ class CampaignDetailView(DetailView):
     model = Campaign
     template_name = "campaigns/details.html"
     context_object_name = "campaign"
+
+
+class DonationView(CreateView):
+    model = Donation
+    template_name = "campaigns/make-donation.html"
+    form_class = DonationForm
+    pk = None
+    campaign = None
+
+    def dispatch(self, request, *args, **kwargs):
+        print(self.get_form())
+        self.pk = kwargs['pk']
+        return super().dispatch(self.request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(DonationView, self).get_context_data(**kwargs)
+        self.campaign = Campaign.objects.prefetch_related('user').get(id=self.pk)
+        context['campaign'] = self.campaign
+        context['countries'] = Country.objects.all()
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy("campaign:campaign-detail", kwargs={'pk': self.pk})
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.date = now()
+        self.object.approved = False
+        self.object.campaign_id = self.pk
+        self.object.save()
+        data = {
+            'success': True,
+            'url': self.get_success_url()
+        }
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        data = {
+            'success': False,
+            'errors': form.errors,
+        }
+        return JsonResponse(data, status=200)

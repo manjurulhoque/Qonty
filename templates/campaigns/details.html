@@ -75,12 +75,10 @@
 
                 <div role="tabpanel" class="tab-pane fade in description wordBreak" id="donations">
 
-							<span class="btn-block text-center">
+                    <span class="btn-block text-center">
 		    			<i class="ion ion-cash ico-no-result"></i>
 		    		</span>
                     <span class="text-center btn-block">There are no donations</span>
-
-
                 </div>
 
                 <div role="tabpanel" class="tab-pane fade description wordBreak margin-top-30" id="updates">
@@ -122,7 +120,7 @@
             </div><!-- End Panel -->
 
             <div class="btn-group btn-block margin-bottom-20 ">
-                <a href="https://fundme.miguelvasquez.net/donate/721/bikin-roti" class="btn btn-main btn-donate btn-lg btn-block custom-rounded">
+                <a href="{% url 'campaign:campaign-donation' campaign.id %}" class="btn btn-main btn-donate btn-lg btn-block custom-rounded">
                     Donate Now
                 </a>
             </div>

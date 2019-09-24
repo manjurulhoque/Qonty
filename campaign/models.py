@@ -23,3 +23,21 @@ class Campaign(models.Model):
     def days_remaining(self):
         delta = self.deadline - datetime.now().date()
         return delta.days
+
+
+class Donation(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
+    fullname = models.CharField(max_length=100)
+    email = models.EmailField()
+    country = models.CharField(max_length=50)
+    postal_code = models.CharField(max_length=20)
+    donation = models.PositiveIntegerField()
+    anonymous = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
+    comment = models.TextField(blank=True, null=True)
+    date = models.DateField()
+
+    def __str__(self):
+        return "{} donate {}".format(self.fullname, self.donation)
+
