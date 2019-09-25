@@ -62,7 +62,8 @@
                 </li>
 
                 <li>
-                    <a class="text-uppercase font-default" href="http://127.0.0.1:8001/page/how-it-works">How it works</a>
+                    <a class="text-uppercase font-default" href="http://127.0.0.1:8001/page/how-it-works">How it
+                        works</a>
                 </li>
 
                 {% if request.user.is_authenticated %}
@@ -88,7 +89,7 @@
                             </li>
 
                             <li>
-                                <a href="#" class="text-overflow">
+                                <a href="{% url 'accounts:account' %}" class="text-overflow">
                                     <i class="glyphicon glyphicon-cog myicon-right"></i> Account Settings
                                 </a>
                             </li>
@@ -102,7 +103,8 @@
                     </li>
 
                     <li>
-                        <a class="log-in custom-rounded" href="{% url 'campaign:campaign-create' %}" title="Create Campaign">
+                        <a class="log-in custom-rounded" href="{% url 'campaign:campaign-create' %}"
+                           title="Create Campaign">
                             <i class="glyphicon glyphicon-edit"></i> <strong>Create Campaign</strong>
                         </a>
                     </li>

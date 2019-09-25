@@ -74,3 +74,9 @@ class UserLoginForm(forms.Form):
 
     def get_user(self):
         return self.user
+
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("username", "country")

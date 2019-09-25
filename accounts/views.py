@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, FormView, RedirectView
+from django.views.generic import CreateView, FormView, RedirectView, UpdateView
 
 from core.models import Country
 from .forms import *
@@ -79,3 +79,25 @@ class LogoutView(RedirectView):
         auth.logout(request)
         messages.success(request, 'You are now logged out')
         return super(LogoutView, self).get(request, *args, **kwargs)
+
+
+class AccountSettingsView(UpdateView):
+    model = User
+    template_name = "accounts/account.html"
+    context_object_name = "user"
+    form_class = UserUpdateForm
+    success_url = reverse_lazy("accounts:account")
+
+    def dispatch(self, request, *args, **kwargs):
+        print(self.request.resolver_match)
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect("accounts/login")
+        return super().dispatch(self.request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['countries'] = Country.objects.all()
+        return context
