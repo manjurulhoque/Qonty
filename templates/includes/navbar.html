@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="{% url 'core:home' %}">
-                <img src="http://127.0.0.1:8001/public/img/logo.png" class="logo"/>
+                <img src="{% static 'img/logo.png' %}" class="logo" style="width: 50px; height: 50px"/>
             </a>
         </div><!-- navbar-header -->
 
@@ -62,8 +62,7 @@
                 </li>
 
                 <li>
-                    <a class="text-uppercase font-default" href="http://127.0.0.1:8001/page/how-it-works">How it
-                        works</a>
+                    <a class="text-uppercase font-default" href="#">How it works</a>
                 </li>
 
                 {% if request.user.is_authenticated %}

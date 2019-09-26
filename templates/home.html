@@ -23,13 +23,12 @@
 
         {% for category in categories %}
             <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 row-margin-20">
-                <a href="http://127.0.0.1:8001/category/Animals">
-                    <img class="img-responsive btn-block custom-rounded"
-                         src="{{ category.category_image }}" alt="Animals">
+                <a href="{% url 'core:campaigns-by-category' category.id %}">
+                    <img class="img-responsive btn-block custom-rounded" src="{{ category.category_image }}" alt="Animals">
                 </a>
 
                 <h1 class="title-services">
-                    <a href="http://127.0.0.1:8001/category/Animals">
+                    <a href="{% url 'core:campaigns-by-category' category.id %}">
                         {{ category.name }} ({{ category.campaign_set.count }})
                     </a>
                 </h1>
