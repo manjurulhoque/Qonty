@@ -10,4 +10,29 @@
         </div>
     </div>
 
+    <div class="container margin-bottom-40">
+        <div class="col-md-12 margin-top-20 margin-bottom-20">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col" style="width: 40%">Description</th>
+                    <th scope="col">Goal Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for campaign in campaigns %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ campaign.title }}</td>
+                        <td>{{ campaign.description | safe }}</td>
+                        <td>{{ campaign.goal }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 {% endblock %}
