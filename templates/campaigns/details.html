@@ -69,7 +69,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane fade in active description wordBreak" id="desc">
-                    {{ campaign.description }}
+                    {{ campaign.description | safe }}
                 </div>
 
                 <div role="tabpanel" class="tab-pane fade in description wordBreak" id="donations">
