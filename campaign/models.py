@@ -2,9 +2,9 @@ import hashlib
 import uuid
 from datetime import datetime
 from django.db import models
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.http import urlencode
 from django.utils.timezone import now
+from django.templatetags.static import static
 
 from accounts.models import User
 from core.models import Category
