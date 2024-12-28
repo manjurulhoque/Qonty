@@ -22,9 +22,12 @@
         </div>
 
         {% for category in categories %}
-            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 row-margin-20">
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12 row-margin-20 text-center">
                 <a href="{% url 'core:campaigns-by-category' category.id %}">
-                    <img class="img-responsive btn-block custom-rounded" src="{{ category.category_image }}" alt="Animals">
+                    <img class="img-responsive custom-rounded center-block" 
+                         src="{{ category.category_image }}" 
+                         alt="{{ category.name }}" 
+                         style="height: 50px; width: 50px;">
                 </a>
 
                 <h1 class="title-services">

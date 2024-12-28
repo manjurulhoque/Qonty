@@ -20,6 +20,6 @@ class Category(models.Model):
 
     @property
     def category_image(self):
-        if os.path.exists(self.image.url):
+        if self.image:
             return self.image.url
         return "/media/categories/default.png"
