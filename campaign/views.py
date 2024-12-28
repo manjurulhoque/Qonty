@@ -2,9 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.utils.timezone import now
+from django.db.models import Q, Sum
 from django.views.generic import CreateView, DetailView, ListView
 from django.utils.translation import gettext as _
-from django.db.models import Q, Sum
+from django.core.exceptions import ValidationError
+from django.contrib import messages
+from django.shortcuts import redirect, get_object_or_404
 
 from core.models import Country
 from .forms import *
@@ -107,36 +111,76 @@ class DonationView(CreateView):
     model = Donation
     template_name = "campaigns/make-donation.html"
     form_class = DonationForm
-    pk = None
-    campaign = None
-
+    
     def dispatch(self, request, *args, **kwargs):
-        print(self.get_form())
-        self.pk = kwargs["pk"]
-        return super().dispatch(self.request, *args, **kwargs)
+        # Get campaign and verify it exists and is active
+        self.campaign = get_object_or_404(
+            Campaign.objects.select_related('user'),
+            id=kwargs['pk'],
+        )
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(DonationView, self).get_context_data(**kwargs)
-        self.campaign = Campaign.objects.prefetch_related("user").get(id=self.pk)
-        context["campaign"] = self.campaign
-        context["countries"] = Country.objects.all()
+        context = super().get_context_data(**kwargs)
+        
+        # Get donation statistics
+        donations = self.campaign.donation_set.filter(approved=True)
+        total_raised = donations.aggregate(Sum('donation'))['donation__sum'] or 0
+        total_donors = donations.count()
+        
+        # Calculate progress percentage
+        progress_percentage = (total_raised / self.campaign.goal * 100) if self.campaign.goal > 0 else 0
+
+        context.update({
+            'campaign': self.campaign,
+            'countries': Country.objects.all(),
+            'total_raised': total_raised,
+            'total_donors': total_donors,
+            'progress_percentage': min(100, progress_percentage),
+            'min_donation': 5,  # Minimum donation amount
+            'recent_donations': donations.order_by('-date')[:5],
+            "percentage": int(progress_percentage),
+        })
         return context
 
-    def get_success_url(self):
-        return reverse_lazy("campaign:campaign-detail", kwargs={"pk": self.pk})
-
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.date = now()
-        self.object.approved = False
-        self.object.campaign_id = self.pk
-        self.object.save()
-        data = {"success": True, "url": self.get_success_url()}
-        return JsonResponse(data)
+        donation = form.save(commit=False)
+        
+        # Set additional fields
+        donation.campaign = self.campaign
+        donation.date = now()
+        donation.approved = False  # Require admin approval
+        
+        # Set user if authenticated
+        if self.request.user.is_authenticated:
+            donation.user = self.request.user
+        
+        # Validate minimum donation
+        if donation.donation < 5:
+            messages.error(self.request, 'Minimum donation amount is $5')
+            return self.form_invalid(form)
+            
+        donation.save()
+        messages.success(
+            self.request, 
+            'Thank you for your donation! It will be reviewed by our team.'
+        )
+        return redirect('campaign:campaign-detail', pk=self.campaign.id)
 
     def form_invalid(self, form):
-        data = {
-            "success": False,
-            "errors": form.errors,
-        }
-        return JsonResponse(data, status=200)
+        messages.error(
+            self.request, 
+            'Please correct the errors below.'
+        )
+        return super().form_invalid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.user.is_authenticated:
+            # Pre-fill form with user data
+            kwargs['initial'] = {
+                'fullname': self.request.user.get_full_name(),
+                'email': self.request.user.email,
+                'country': self.request.user.country.name if hasattr(self.request.user, 'country') else None
+            }
+        return kwargs

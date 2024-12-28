@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load humanize %}
+{% load campaign_tags %}
 
 {% block content %}
-
     <div class="jumbotron md header-donation jumbotron_set">
         <div class="container wrap-jumbotron position-relative">
             <h2 class="title-site">Donate</h2>
@@ -10,213 +11,201 @@
     </div>
 
     <div class="container margin-bottom-40 padding-top-40">
-
         <!-- Col MD -->
         <div class="col-md-8 margin-bottom-20">
-
             <!-- form start -->
-            <form method="POST" action="#" enctype="multipart/form-data" id="formDonation">
-
+            <form method="POST" action="">
                 {% csrf_token %}
-                <input type="hidden" name="_id" value="{{ campaign.id }}">
+                
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
 
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    Please correct the errors below.
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <input type="hidden" name="_id" value="{{ campaign.id }}">
 
                 <div class="form-group">
                     <label>Enter your donation</label>
                     <div class="input-group has-success">
                         <div class="input-group-addon addon-dollar">$</div>
-                        <input type="number" min="5" autocomplete="off" id="onlyNumber" required class="form-control input-lg" name="donation" value="" placeholder="Minimum amount $5 USD">
+                        <input type="number" 
+                               min="5" 
+                               autocomplete="off" 
+                               id="onlyNumber" 
+                               required 
+                               class="form-control input-lg" 
+                               name="donation" 
+                               value="" 
+                               placeholder="Minimum amount $5 USD">
                     </div>
+                    <small class="text-muted">Minimum donation amount is $5</small>
                 </div>
 
-                <!-- Start -->
+                <!-- Personal Info -->
                 <div class="form-group">
                     <label>Full name</label>
-                    <input type="text" value="" name="fullname" class="form-control input-lg" required placeholder="First name and Last name">
-                </div><!-- /. End-->
+                    <input type="text" 
+                           value="{% if request.user.is_authenticated %}{{ request.user.get_full_name }}{% endif %}" 
+                           name="fullname" 
+                           class="form-control input-lg" 
+                           required 
+                           placeholder="First name and Last name">
+                </div>
 
-                <!-- Start -->
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="text" value="" name="email" class="form-control input-lg" required placeholder="Email">
-                </div><!-- /. End-->
+                    <input type="email" 
+                           value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" 
+                           name="email" 
+                           class="form-control input-lg" 
+                           required 
+                           placeholder="Email">
+                </div>
 
                 <div class="row form-group">
-                    <!-- Start -->
                     <div class="col-xs-6">
                         <label>Country</label>
                         <select name="country" class="form-control input-lg" required>
-                            <option value="">Select One</option>
+                            <option value="">Select Country</option>
                             {% for country in countries %}
-                                <option {% if request.user.country.id == country.id %} selected="selected" {% endif %} value="{{ country.name }}">{{ country.name }}</option>
+                                <option value="{{ country.name }}"
+                                    {% if request.user.country.id == country.id %}selected="selected"{% endif %}>
+                                    {{ country.name }}
+                                </option>
                             {% endfor %}
                         </select>
-                    </div><!-- /. End-->
+                    </div>
 
-                    <!-- Start -->
                     <div class="col-xs-6">
                         <label>Postal Code</label>
-                        <input type="text" value="" name="postal_code" required class="form-control input-lg" placeholder="Postal Code">
-                    </div><!-- /. End-->
+                        <input type="text" 
+                               value="" 
+                               name="postal_code" 
+                               required 
+                               class="form-control input-lg" 
+                               placeholder="Postal Code">
+                    </div>
+                </div>
 
-                </div><!-- row form-control -->
-
-                <!-- Start -->
                 <div class="form-group">
-                    <input type="text" value="" name="comment" class="form-control input-lg" placeholder="Write a brief comment (optional)">
-                </div><!-- /. End-->
+                    <label>Comment (Optional)</label>
+                    <textarea name="comment" 
+                              rows="4" 
+                              class="form-control input-lg" 
+                              placeholder="Leave a message of support (optional)"></textarea>
+                </div>
 
-                <!-- Start -->
                 <div class="form-group">
-                    <label>Payment gateway</label>
-                    <select name="payment_gateway" id="paymentGateway" class="form-control input-lg">
-                        <option value="">Select One</option>
-                        <option value="stripe">Debit/Credit Card</option>
+                    <label>Payment Method</label>
+                    <select name="payment_gateway" id="paymentGateway" class="form-control input-lg" required>
+                        <option value="">Select Payment Method</option>
+                        <option value="stripe">Credit/Debit Card</option>
                     </select>
-                </div><!-- /. End-->
+                </div>
 
                 <div class="form-group checkbox icheck">
                     <label class="margin-zero">
                         <input class="no-show" name="anonymous" type="checkbox" value="1">
-                        <span class="margin-lft5 keep-login-title">Make anonymous donation</span>
+                        <span class="margin-lft5 keep-login-title">Make this donation anonymous</span>
                     </label>
                 </div>
-                <!-- Alert -->
-                <div class="alert alert-danger display-none" id="errorDonation">
-                    <ul class="list-unstyled" id="showErrorsDonation"></ul>
-                </div><!-- Alert -->
 
                 <div class="box-footer text-center">
                     <hr/>
-
-                    <button type="submit" id="buttonDonation" class="btn-padding-custom btn btn-lg btn-main custom-rounded">Donate</button>
+                    <button type="submit" class="btn-padding-custom btn btn-lg btn-main custom-rounded">
+                        Donate Now
+                    </button>
                     <div class="btn-block text-center margin-top-20">
-                        <a href="#" class="text-muted">
-                            <i class="fa fa-long-arrow-left"></i> Go Back</a>
+                        <a href="{% url 'campaign:campaign-detail' campaign.id %}" class="text-muted">
+                            <i class="fa fa-long-arrow-left"></i> Back to Campaign
+                        </a>
                     </div>
-                </div><!-- /.box-footer -->
-
+                </div>
             </form>
+        </div>
 
-        </div><!-- /COL MD -->
-
+        <!-- Sidebar -->
         <div class="col-md-4">
-
-            <!-- Start Panel -->
+            <!-- Campaign Stats -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3 class="btn-block margin-zero" style="line-height: inherit;">
-                        <strong class="font-default">$225</strong>
-                        <small>of $1000 goal</small>
+                        <strong class="font-default">${{ total_raised|intcomma }}</strong>
+                        <small>of ${{ campaign.goal|intcomma }} goal</small>
                     </h3>
 
-                    <span class="progress margin-top-10 margin-bottom-10">
-					<span class="percentage" style="width: 24%" aria-valuemin="0" aria-valuemax="100" role="progressbar"></span>
-				</span>
+                    <div class="progress margin-top-10 margin-bottom-10">
+                        <div class="progress-bar" role="progressbar" 
+                             style="width: {{ percentage }}%; line-height: 12px;"
+                             aria-valuenow="{{ percentage }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100" 
+                             aria-valuetext="{{ percentage }}%">
+                            {{ percentage }}%
+                        </div>
+                    </div>
 
                     <small class="btn-block margin-bottom-10 text-muted">
-                        24% Raised by 5 Donations
+                        {{ percentage }}% Raised by {{ campaign.donation_set.count }} Donation{{ campaign.donation_set.count|pluralize }}
                     </small>
                 </div>
-            </div><!-- End Panel -->
+            </div>
 
-            <!-- Start Panel -->
+            <!-- Campaign Creator -->
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="media none-overflow">
-
-                        <span class="btn-block text-center margin-bottom-10 text-muted"><strong>Organizer</strong></span>
+                        <span class="btn-block text-center margin-bottom-10 text-muted">
+                            <strong>Campaign Organizer</strong>
+                        </span>
 
                         <div class="media-center margin-bottom-5">
-                            <img class="img-circle center-block" src="#" width="60" height="60">
+                            <img class="img-circle center-block" 
+                                 src="{{ campaign.user.avatar_url }}" 
+                                 width="60" height="60">
                         </div>
 
                         <div class="media-body text-center">
-
                             <h4 class="media-heading">
-                                {{ campaign.user.username }}
-
+                                {{ campaign.user.get_full_name }}
                                 {% if request.user.is_authenticated and request.user.id != campaign.user.id %}
                                     <a href="#" title="Contact Organizer" data-toggle="modal" data-target="#sendEmail">
                                         <i class="fa fa-envelope myicon-right"></i>
                                     </a>
                                 {% endif %}
                             </h4>
-
-                            <small class="media-heading text-muted btn-block margin-zero">Created {{ campaign.date|date }}</small>
-                            <small class="media-heading text-muted btn-block"><i class="fa fa-map-marker myicon-right"></i> {{ campaign.location }}</small>
+                            <small class="media-heading text-muted btn-block margin-zero">
+                                Created {{ campaign.date|date }}
+                            </small>
+                            <small class="media-heading text-muted btn-block">
+                                <i class="fa fa-map-marker myicon-right"></i> {{ campaign.location }}
+                            </small>
                         </div>
                     </div>
                 </div>
-            </div><!-- End Panel -->
-
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <img class="img-responsive img-rounded" style="display: inline-block;" src="#"/>
-                </div>
             </div>
 
-            <div class="modal fade" id="sendEmail" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modalContactOrganizer">
-                    <div class="modal-content">
-                        <div class="modal-header headerModal headerModalOverlay position-relative" style="background-image: url()">
-                            <button type="button" class="close closeLight position-relative" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-
-                            <span class="btn-block margin-top-15 margin-bottom-15 text-center position-relative">
-                                <img class="img-circle" src="#" width="80" height="80">
-                            </span>
-
-                            <h5 class="modal-title text-center font-default position-relative" id="myModalLabel">
-                                {{ campaign.user.username }}
-                            </h5>
-
-                            <h4 class="modal-title text-center font-default position-relative" id="myModalLabel">
-                                Contact Organizer
-                            </h4>
-                        </div><!-- Modal header -->
-
-                        <div class="modal-body listWrap text-center center-block modalForm">
-
-                            <!-- form start -->
-                            <form method="POST" class="margin-bottom-15" action="#" enctype="multipart/form-data" id="formContactOrganizer">
-                                {% csrf_token %}
-                                <input type="hidden" name="id" value="{{ campaign.user.id }}">
-
-                                <!-- Start Form Group -->
-                                <div class="form-group">
-                                    <input type="text" required="" name="name" class="form-control" placeholder="Name">
-                                </div><!-- /.form-group-->
-
-                                <!-- Start Form Group -->
-                                <div class="form-group">
-                                    <input type="text" required="" name="email" class="form-control" placeholder="Email">
-                                </div><!-- /.form-group-->
-
-                                <!-- Start Form Group -->
-                                <div class="form-group">
-                                    <textarea name="message" rows="4" class="form-control" placeholder="Message"></textarea>
-                                </div><!-- /.form-group-->
-
-                                <!-- Alert -->
-                                <div class="alert alert-danger display-none" id="dangerAlert">
-                                    <ul class="list-unstyled text-left" id="showErrors"></ul>
-                                </div><!-- Alert -->
-
-                                <button type="submit" class="btn btn-lg btn-main custom-rounded" id="buttonFormSubmit">Send Message</button>
-                            </form>
-
-                            <!-- Alert -->
-                            <div class="alert alert-success display-none" id="successAlert">
-                                <ul class="list-unstyled" id="showSuccess"></ul>
-                            </div><!-- Alert -->
-
-                        </div><!-- Modal body -->
-                    </div><!-- Modal content -->
-                </div><!-- Modal dialog -->
-            </div><!-- Modal -->
-
-        </div><!-- /COL MD -->
-
-    </div><!-- container wrap-ui -->
-
+            <!-- Campaign Image -->
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <img class="img-responsive img-rounded" 
+                         style="display: inline-block;" 
+                         src="{{ campaign.image_url }}"
+                         alt="{{ campaign.title }}"/>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
