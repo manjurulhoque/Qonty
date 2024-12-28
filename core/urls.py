@@ -10,6 +10,7 @@ urlpatterns = [
     path('', HomeView.as_view(), name="home"),
     path('categories', CategoryListView.as_view(), name="categories"),
     path('campaigns-by-category/<int:pk>', CampaignsByCategoryView.as_view(), name="campaigns-by-category"),
+    path('how-it-works/', HowItWorksView.as_view(), name='how-it-works'),
 ]
 
 if settings.DEBUG:

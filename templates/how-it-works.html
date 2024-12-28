@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}How It Works - Fundly{% endblock %}
+
+{% block content %}
+<div class="jumbotron md index-header jumbotron_set jumbotron-cover">
+    <div class="container wrap-jumbotron position-relative">
+        <h1 class="title-site">How It Works</h1>
+        <p class="subtitle-site"><strong>Your guide to successful crowdfunding</strong></p>
+    </div>
+</div>
+
+<div class="container margin-bottom-40">
+    <!-- Steps Section -->
+    <div class="row text-center margin-bottom-40">
+        {% for step in steps %}
+        <div class="col-md-3 col-sm-6 margin-bottom-20">
+            <div class="how-it-works-box">
+                <i class="{{ step.icon }} how-it-works-icon"></i>
+                <h3 class="how-it-works-title">{{ step.title }}</h3>
+                <p class="how-it-works-desc">{{ step.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Detailed Information -->
+    <div class="row margin-bottom-40">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel-group" id="accordion">
+                <!-- Getting Started -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                                Getting Started
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <p>Starting your campaign is easy:</p>
+                            <ul>
+                                <li>Sign up for a free account</li>
+                                <li>Click "Create Campaign"</li>
+                                <li>Fill in your campaign details</li>
+                                <li>Add images and videos</li>
+                                <li>Set your funding goal and deadline</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campaign Tips -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                                Campaign Tips
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse2" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <p>Tips for a successful campaign:</p>
+                            <ul>
+                                <li>Tell a compelling story</li>
+                                <li>Use high-quality images</li>
+                                <li>Set a realistic funding goal</li>
+                                <li>Engage with your supporters</li>
+                                <li>Share updates regularly</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Funding Process -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                                Funding Process
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse3" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <p>Understanding the funding process:</p>
+                            <ul>
+                                <li>Campaigns run for a set time period</li>
+                                <li>Supporters can donate any amount</li>
+                                <li>Progress is tracked in real-time</li>
+                                <li>Funds are released after campaign ends</li>
+                                <li>Platform fee is only 5%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -30,4 +30,62 @@
 .input-group .form-control:focus {
     border-color: #333;
     box-shadow: none;
+}
+
+/* How It Works Styles */
+.how-it-works-box {
+    padding: 20px;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.how-it-works-box:hover {
+    background: #f8f9fa;
+    transform: translateY(-5px);
+}
+
+.how-it-works-icon {
+    font-size: 3em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.how-it-works-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.how-it-works-desc {
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Accordion Styles */
+.panel-title {
+    font-size: 1.1em;
+}
+
+.panel-title a {
+    display: block;
+    padding: 10px 0;
+    color: #333;
+    text-decoration: none;
+}
+
+.panel-title a:hover {
+    color: #666;
+}
+
+.panel-body {
+    color: #666;
+    line-height: 1.6;
+}
+
+.panel-body ul {
+    padding-left: 20px;
+}
+
+.panel-body li {
+    margin-bottom: 8px;
 } 
