@@ -232,3 +232,16 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f'Successfully created {len(users)} users, {len(campaigns)} campaigns, and {Donation.objects.count()} donations'
         )) 
+
+        # def get_random_image():
+        #     """Fetch a random image from Lorem Picsum"""
+        #     try:
+        #         # Get a random image (800x600)
+        #         width, height = 800, 600
+        #         image_url = f"https://picsum.photos/{width}/{height}"
+        #         response = requests.get(image_url)
+        #         if response.status_code == 200:
+        #             return ContentFile(response.content, name=f"campaign_{random.randint(1, 1000)}.jpg")
+        #     except Exception as e:
+        #         print(e)
+        #     return None

@@ -1,5 +1,7 @@
-asgiref==3.8.1
-Django==5.0.8
 django-debug-toolbar==4.4.6
+Faker==33.1.0
 pillow==11.0.0
-sqlparse==0.5.3
+pipdeptree==2.24.0
+requests==2.32.3
+setuptools==75.2.0
+wheel==0.44.0
