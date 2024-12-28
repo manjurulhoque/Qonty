@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, ListView
 from django.utils.translation import gettext as _
-from django.db.models import Q
+from django.db.models import Q, Sum
 
 from core.models import Country
 from .forms import *
@@ -80,9 +80,27 @@ class CampaignDetailView(DetailView):
     model = Campaign
     template_name = "campaigns/details.html"
     context_object_name = "campaign"
-    queryset = Campaign.objects.prefetch_related("donation_set").prefetch_related(
-        "user"
-    )
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        campaign = self.get_object()
+        
+        # Get donation statistics
+        donations = campaign.donation_set.filter(approved=True)
+        total_raised = donations.aggregate(Sum('donation'))['donation__sum'] or 0
+        total_donors = donations.count()
+        
+        # Calculate progress percentage
+        progress_percentage = (total_raised / campaign.goal * 100) if campaign.goal > 0 else 0
+        
+        context.update({
+            'total_raised': total_raised,
+            'total_donors': total_donors,
+            'progress_percentage': min(100, progress_percentage),  # Cap at 100%
+            'donations': donations.order_by('-date')[:10],  # Get latest 10 donations
+            'share_url': self.request.build_absolute_uri(),  # Full URL for sharing
+        })
+        return context
 
 
 class DonationView(CreateView):
