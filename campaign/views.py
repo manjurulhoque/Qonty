@@ -181,6 +181,6 @@ class DonationView(CreateView):
             kwargs['initial'] = {
                 'fullname': self.request.user.get_full_name(),
                 'email': self.request.user.email,
-                'country': self.request.user.country.name if hasattr(self.request.user, 'country') else None
+                'country': self.request.user.country.name if hasattr(self.request.user, 'country') and hasattr(self.request.user.country, 'name') else None
             }
         return kwargs

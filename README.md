@@ -72,6 +72,18 @@ A modern crowdfunding platform built with Django that enables users to create an
 - Python Decouple
 - Django Debug Toolbar
 
+
+### Screenshots
+
+![Home Page](screenshots/home.png)
+*Home page*
+
+![Campaign Page](screenshots/campaign.png)
+*Campaign page*
+
+![Donation Page](screenshots/donation.png)
+*Donation page*
+
 ## Installation
 
 1. Clone the repository
