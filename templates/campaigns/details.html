@@ -12,7 +12,7 @@
         <div class="col-md-8 margin-bottom-20">
 
             <div class="text-center margin-bottom-20">
-                <img class="img-responsive img-rounded" style="display: inline-block;" src="{{ campaign.image.url }}"/>
+                <img class="img-responsive img-rounded" style="display: inline-block;" src="{{ campaign.image_url }}"/>
             </div>
 
             <h1 class="font-default title-image none-overflow margin-bottom-20">{{ campaign.title }}</h1>
@@ -117,7 +117,7 @@
                 <div class="panel-body">
                     <div class="media none-overflow">
                         <div class="media-center margin-bottom-5">
-                            <img class="img-circle center-block" src="" width="60" height="60">
+                            <img class="img-circle center-block" src="{{ campaign.user.avatar_url }}" width="60" height="60">
                         </div>
                         <div class="media-body text-center">
 
@@ -204,7 +204,7 @@
                             <button type="button" class="close closeLight position-relative" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 
                             <span class="btn-block margin-top-15 margin-bottom-15 text-center position-relative">
-                                <img class="img-circle" src="" width="80" height="80">
+                                <img class="img-circle" src="{{ campaign.user.avatar_url }}" width="80" height="80">
                             </span>
 
                             <h5 class="modal-title text-center font-default position-relative" id="myModalLabel">

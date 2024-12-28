@@ -17,11 +17,17 @@ class Campaign(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     date = models.DateTimeField(default=now, blank=True)
-    status = models.CharField(max_length=20, default='pending')
+    status = models.CharField(max_length=20, default="pending")
     image = models.ImageField(upload_to="campaigns")
     goal = models.IntegerField()
     location = models.CharField(max_length=150)
     deadline = models.DateField()
+
+    def __str__(self):
+        return self.title
+
+    def image_url(self):
+        return self.image.url if self.image else "https://placehold.co/600x400?text=No+Image"
 
     def days_remaining(self):
         delta = self.deadline - datetime.now().date()
@@ -50,15 +56,19 @@ class Donation(models.Model):
 
     @property
     def avatar(self):
-        default = static('img/default.jpg')
+        default = static("img/default.jpg")
         size = 40
-        query_string = urlencode({
-            's': str(size),
-        })
+        query_string = urlencode(
+            {
+                "s": str(size),
+            }
+        )
 
         url_base = "https://www.gravatar.com/"
         email_hash = hashlib.md5(self.email.strip().lower().encode("utf-8")).hexdigest()
 
         # Build url
-        url = '{base}avatar/{hash}.jpg?{qs}'.format(base=url_base, hash=email_hash, qs=query_string)
+        url = "{base}avatar/{hash}.jpg?{qs}".format(
+            base=url_base, hash=email_hash, qs=query_string
+        )
         return default if self.anonymous == 0 else url

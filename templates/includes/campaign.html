@@ -9,7 +9,7 @@
                 </span>
             {% endif %}
 
-            <img title="{{ campaign.title }}" src="{{ campaign.image.url }}" class="image-url img-responsive btn-block radius-image"/>
+            <img title="{{ campaign.title }}" src="{{ campaign.image_url }}" class="image-url img-responsive btn-block radius-image"/>
         </a>
 
         <div class="caption">
@@ -21,7 +21,7 @@
 
             <p class="desc-campaigns">
                 {% if campaign.user %}
-                    <img src="{{ campaign.image.url }}" width="20" height="20" class="img-circle avatar-campaign"/> {{ campaign.user.username }}
+                    <img src="{{ campaign.image_url }}" width="20" height="20" class="img-circle avatar-campaign"/> {{ campaign.user.username }}
                 {% else %}
                     <img src="" width="20" height="20" class="img-circle avatar-campaign"/> User not available
                 {% endif %}
