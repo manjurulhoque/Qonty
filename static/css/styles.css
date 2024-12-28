@@ -1,0 +1,33 @@
+.index-header {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/header-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 100px 0;
+    margin-bottom: 40px;
+}
+
+.title-site {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.subtitle-site {
+    font-size: 1.5em;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+    color: #333;
+}
+
+.pagination > .active > a,
+.pagination > .active > span {
+    background-color: #333;
+    border-color: #333;
+}
+
+.input-group .form-control:focus {
+    border-color: #333;
+    box-shadow: none;
+} 
