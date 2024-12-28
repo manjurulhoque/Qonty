@@ -2,7 +2,7 @@
 
     <li class="margin-bottom-5">
         <!-- **** list-group-item **** -->
-        <a href="#" class="list-group-item">
+        <a href="{% url 'dashboard:user-campaign-dashboard' %}" class="list-group-item">
             <i class="icon icon-dashboard myicon-right"></i> Dashboard
         </a> <!-- **** ./ list-group-item **** -->
     </li>
@@ -16,8 +16,8 @@
 
     <li class="margin-bottom-5">
         <!-- **** list-group-item **** -->
-        <a href="#"
-           class="list-group-item @if(Request::is('account/password'))active @endif">
+        <a href="{% url 'accounts:change-password' %}" 
+           class="list-group-item {% if request.resolver_match.url_name == 'change-password' %} active {% endif %}">
             <i class="icon icon-lock myicon-right"></i> Change Password
         </a> <!-- **** ./ list-group-item **** -->
     </li>

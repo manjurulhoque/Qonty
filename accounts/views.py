@@ -4,6 +4,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView, RedirectView, UpdateView
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from core.models import Country
 from .forms import *
@@ -101,3 +103,16 @@ class AccountSettingsView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['countries'] = Country.objects.all()
         return context
+
+
+class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'accounts/change-password.html'
+    success_url = reverse_lazy('accounts:change-password')
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Your password was successfully updated!')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please correct the errors below.')
+        return super().form_invalid(form)

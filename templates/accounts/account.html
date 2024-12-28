@@ -12,26 +12,6 @@
 
         <!-- Col MD -->
         <div class="col-md-8 margin-bottom-20">
-
-            {#            <form action="" method="POST" id="formAvatar" accept-charset="UTF-8"#}
-            {#                  enctype="multipart/form-data">#}
-            {#                {% csrf_token %}#}
-            {##}
-            {#                <div class="text-center">#}
-            {#                    <img src="#" alt="User" width="100" height="100"#}
-            {#                         class="img-rounded avatarUser"/>#}
-            {#                </div>#}
-            {##}
-            {#                <div class="text-center">#}
-            {#                    <button type="button" class="btn btn-default btn-border btn-sm" id="avatar_file"#}
-            {#                            style="margin-top: 10px;">#}
-            {#                        <i class="icon-camera myicon-right"></i> Change Avatar#}
-            {#                    </button>#}
-            {#                    <input type="file" name="photo" id="uploadAvatar" accept="image/*" style="visibility: hidden;">#}
-            {#                </div>#}
-            {##}
-            {#            </form>#}
-
             {% if form.errors %}
                 {% for field in form %}
                     {% for error in field.errors %}
@@ -51,16 +31,18 @@
                     <label class="font-default">Full Name</label>
                     <input type="text" class="form-control login-field custom-rounded" value="{{ user.username }}"
                            name="username" placeholder="Enter Username"
-                           title="username" autocomplete="off">
+                           title="username" autocomplete="off" required>
                 </div>
 
                 <div class="form-group has-feedback">
                     <label class="font-default">Country</label>
-                    <select name="country" class="form-control">
+                    <select name="country" class="form-control" required>
                         <option value="">Select your country</option>
                         {% for country in countries %}
                             <option {% if user.country_id == country.id %} selected="selected" {% endif %}
-                                                                           value="{{ country.id }}">{{ country.name }}</option>
+                                    value="{{ country.id }}">
+                                {{ country.name }}
+                            </option>
                         {% endfor %}
                     </select>
                 </div>

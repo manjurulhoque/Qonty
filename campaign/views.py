@@ -165,7 +165,7 @@ class DonationView(CreateView):
             self.request, 
             'Thank you for your donation! It will be reviewed by our team.'
         )
-        return redirect('campaign:campaign-detail', pk=self.campaign.id)
+        return redirect('campaign:campaign-donation', pk=self.campaign.id)
 
     def form_invalid(self, form):
         messages.error(

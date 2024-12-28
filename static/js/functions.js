@@ -734,7 +734,11 @@ $(document).ready(function () {
         });//<--------- * END KEYUP * ------>
     });//<----------- * DOM LOAD  * --------->
 
-    $('button[type=submit], input[type=submit]').not('.btn_search,.actionDelete').click(function () {
+    // $('button[type=submit], input[type=submit]').not('.btn_search,.actionDelete').click(function () {
+    //     $('.wrap-loader').show();
+    // });
+
+    $('button[type=submit], input[type=submit]').not('.btn_search,.actionDelete').submit(function () {
         $('.wrap-loader').show();
     });
 
