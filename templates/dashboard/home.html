@@ -7,47 +7,146 @@
         <div class="container wrap-jumbotron position-relative">
             <h2 class="title-site">My Dashboard</h2>
             <p class="subtitle-site">
-                <strong>{{ total_campaigns }} campaign{{ total_campaigns|pluralize }}</strong>
+                <strong>{{ active_campaigns }} Active Campaign{{ active_campaigns|pluralize }}</strong>
             </p>
         </div>
     </div>
 
     <div class="container margin-bottom-40">
-        <!-- Stats Cards -->
-        <div class="row margin-bottom-30">
-            <div class="col-md-3 col-sm-6">
-                <div class="panel panel-default text-center">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Total Raised</h3>
-                    </div>
-                    <div class="panel-body">
-                        <h3>${{ total_raised|intcomma }}</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="panel panel-default text-center">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Active Campaigns</h3>
-                    </div>
-                    <div class="panel-body">
-                        <h3>{{ active_campaigns }}</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="panel panel-default text-center">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Total Donations</h3>
-                    </div>
-                    <div class="panel-body">
-                        <h3>{{ total_donations }}</h3>
-                    </div>
-                </div>
-            </div>
+        <div class="row">
+            <!-- Sidebar -->
             <div class="col-md-3">
                 {% include 'includes/navbar-edit.html' %}
             </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <!-- Stats Cards -->
+                <div class="row margin-bottom-30">
+                    <div class="col-md-4">
+                        <div class="panel panel-default text-center">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Total Raised</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h3>${{ total_raised|intcomma }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default text-center">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Active Campaigns</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h3>{{ active_campaigns }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default text-center">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Total Donations</h3>
+                            </div>
+                            <div class="panel-body">
+                                <h3>{{ total_donations }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="row">
+                    <!-- Funds Raised Chart -->
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Funds Raised (Last 30 Days)</h3>
+                            </div>
+                            <div class="panel-body">
+                                <canvas id="fundsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donations Count Chart -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Donations (Last 30 Days)</h3>
+                            </div>
+                            <div class="panel-body">
+                                <canvas id="donationsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Chart data
+    const dates = {{ chart_dates|safe }};
+    const amounts = {{ chart_amounts|safe }};
+    const counts = {{ chart_counts|safe }};
+
+    // Funds Raised Chart
+    new Chart(document.getElementById('fundsChart'), {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Funds Raised ($)',
+                data: amounts,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Donations Count Chart
+    new Chart(document.getElementById('donationsChart'), {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Number of Donations',
+                data: counts,
+                backgroundColor: '#007bff',
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

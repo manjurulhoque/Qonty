@@ -2,7 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, View
-from django.db.models import Sum
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDay
+from django.utils import timezone
+from datetime import timedelta
 from django.shortcuts import render
 
 from campaign.models import Campaign, Donation
@@ -16,17 +19,59 @@ class DashboardView(View):
         return super().dispatch(self.request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        # Get date 30 days ago
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        
+        # Get user campaigns
         user_campaigns = Campaign.objects.filter(user=self.request.user)
+        
+        # Get daily donations for last 30 days
+        daily_donations = Donation.objects.filter(
+            campaign__user=self.request.user,
+            date__gte=thirty_days_ago,
+            approved=True
+        ).annotate(
+            day=TruncDay('date')
+        ).values('day').annotate(
+            total=Sum('donation'),
+            count=Count('id')
+        ).order_by('day')
+        
+        # Prepare chart data
+        dates = []
+        amounts = []
+        counts = []
+        
+        current_date = thirty_days_ago.date()
+        end_date = timezone.now().date()
+        
+        # Create lookup dictionary
+        donations_dict = {
+            d['day'].strftime('%Y-%m-%d'): {'total': d['total'], 'count': d['count']}
+            for d in daily_donations
+        }
+
+        while current_date <= end_date:
+            dates.append(current_date.strftime('%Y-%m-%d'))
+            current_datetime = timezone.make_aware(
+                timezone.datetime.combine(current_date, timezone.datetime.min.time())
+            )
+            day_data = donations_dict.get(current_datetime.strftime('%Y-%m-%d'), {'total': 0, 'count': 0})
+            amounts.append(float(day_data['total'] or 0))
+            counts.append(day_data['count'])
+            current_date += timedelta(days=1)
 
         context = {
             "active_campaigns": user_campaigns.filter(status="active").count(),
             "total_raised": Donation.objects.filter(
                 campaign__user=self.request.user, approved=True
-            ).aggregate(Sum("donation"))["donation__sum"]
-            or 0,
+            ).aggregate(Sum("donation"))["donation__sum"] or 0,
             "total_donations": Donation.objects.filter(
                 campaign__user=self.request.user, approved=True
             ).count(),
+            "chart_dates": dates,
+            "chart_amounts": amounts,
+            "chart_counts": counts,
         }
         return context
 
