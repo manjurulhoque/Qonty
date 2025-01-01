@@ -2,8 +2,15 @@
 
     <li class="margin-bottom-5">
         <!-- **** list-group-item **** -->
-        <a href="{% url 'dashboard:user-campaign-dashboard' %}" class="list-group-item {% if request.resolver_match.url_name == 'user-campaign-dashboard' %} active {% endif %}">
+        <a href="{% url 'dashboard:home' %}" class="list-group-item {% if request.resolver_match.url_name == 'home' %} active {% endif %}">
             <i class="icon icon-dashboard myicon-right"></i> Dashboard
+        </a> <!-- **** ./ list-group-item **** -->
+    </li>
+
+    <li class="margin-bottom-5">
+        <!-- **** list-group-item **** -->
+        <a href="{% url 'dashboard:campaigns' %}" class="list-group-item {% if request.resolver_match.url_name == 'campaigns' %} active {% endif %}">
+            <i class="icon icon-pencil myicon-right"></i> Campaigns
         </a> <!-- **** ./ list-group-item **** -->
     </li>
 

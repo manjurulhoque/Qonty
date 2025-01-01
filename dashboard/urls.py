@@ -1,9 +1,10 @@
 from django.urls import path
 
-from .views import *
+from .views import DashboardView, CampaignListView
 
 app_name = 'dashboard'
 
 urlpatterns = [
-    path('campaigns', CampaignDashboardListView.as_view(), name='user-campaign-dashboard'),
+    path('', DashboardView.as_view(), name='home'),
+    path('campaigns', CampaignListView.as_view(), name='campaigns'),
 ]
