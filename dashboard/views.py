@@ -49,3 +49,31 @@ class CampaignListView(ListView):
             .prefetch_related("donation_set")
             .order_by("-date")
         )
+
+
+class DonationListView(ListView):
+    template_name = "dashboard/donations.html"
+    context_object_name = "donations"
+    paginate_by = 10
+
+    @method_decorator(login_required(login_url=reverse_lazy("accounts:login")))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(self.request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Donation.objects.filter(
+            campaign__user=self.request.user
+        ).select_related(
+            'campaign'
+        ).order_by('-date')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        donations = self.get_queryset()
+        context.update({
+            'total_donations': donations.count(),
+            'total_amount': donations.aggregate(Sum('donation'))['donation__sum'] or 0,
+            'approved_donations': donations.filter(approved=True).count(),
+            'pending_donations': donations.filter(approved=False).count(),
+        })
+        return context

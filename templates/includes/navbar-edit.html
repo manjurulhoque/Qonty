@@ -16,6 +16,13 @@
 
     <li class="margin-bottom-5">
         <!-- **** list-group-item **** -->
+        <a href="{% url 'dashboard:donations' %}" class="list-group-item {% if request.resolver_match.url_name == 'donations' %} active {% endif %}">
+            <i class="icon icon-pencil myicon-right"></i> Donations
+        </a> <!-- **** ./ list-group-item **** -->
+    </li>
+
+    <li class="margin-bottom-5">
+        <!-- **** list-group-item **** -->
         <a href="{% url 'accounts:account' %}" class="list-group-item {% if request.resolver_match.url_name == 'account' %} active {% endif %}">
             <i class="icon icon-pencil myicon-right"></i> Account Settings
         </a> <!-- **** ./ list-group-item **** -->

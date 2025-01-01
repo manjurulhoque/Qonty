@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="jumbotron md index-header jumbotron_set jumbotron-cover">
+    <div class="container wrap-jumbotron position-relative">
+        <h1 class="title-site">My Donations</h1>
+        <p class="subtitle-site"><strong>${{ total_amount|intcomma }} raised from {{ total_donations }} donations</strong></p>
+    </div>
+</div>
+
+<div class="container margin-bottom-40">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            {% include 'includes/navbar-edit.html' %}
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Stats Cards -->
+            <div class="row margin-bottom-30">
+                <div class="col-md-4">
+                    <div class="panel panel-default text-center">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Total Donations</h3>
+                        </div>
+                        <div class="panel-body">
+                            <h3>{{ total_donations }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-default text-center">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Approved Donations</h3>
+                        </div>
+                        <div class="panel-body">
+                            <h3>{{ approved_donations }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-default text-center">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Pending Donations</h3>
+                        </div>
+                        <div class="panel-body">
+                            <h3>{{ pending_donations }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donations Table -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Recent Donations</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Campaign</th>
+                                <th>Donor</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for donation in donations %}
+                                <tr>
+                                    <td>{{ donation.date|date }}</td>
+                                    <td>
+                                        <a href="{% url 'campaign:campaign-detail' donation.campaign.id %}">
+                                            {{ donation.campaign.title|truncatechars:30 }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {% if donation.anonymous %}
+                                            Anonymous
+                                        {% else %}
+                                            {{ donation.fullname }}
+                                        {% endif %}
+                                    </td>
+                                    <td>${{ donation.donation|intcomma }}</td>
+                                    <td>
+                                        <span class="label label-{% if donation.approved %}success{% else %}warning{% endif %}">
+                                            {{ donation.approved|yesno:"Approved,Pending" }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <p class="text-muted">No donations yet.</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <div class="text-center">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        <li {% if page_obj.number == num %}class="active"{% endif %}>
+                            <a href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

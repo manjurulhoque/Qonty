@@ -7,7 +7,7 @@
     <div class="jumbotron md index-header jumbotron_set jumbotron-cover">
         <div class="container wrap-jumbotron position-relative">
             <h1 class="title-site">Sign up</h1>
-            <p class="subtitle-site"><strong>Fundme | Crowdfunding Platform</strong></p>
+            <p class="subtitle-site"><strong>Fundly | Crowdfunding Platform</strong></p>
         </div>
     </div>
 
@@ -25,50 +25,120 @@
 
                         {% csrf_token %}
 
-                        <div class="form-group has-feedback">
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="form-group has-feedback {% if form.username.errors %}has-error{% endif %}">
                             <input type="text" class="form-control login-field custom-rounded"
                                    name="username" placeholder="Username" title="Username"
-                                   autocomplete="off">
+                                   autocomplete="off" required>
                             <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            {% if form.username.errors %}
+                                <span class="help-block">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </span>
+                            {% endif %}
                         </div>
 
-                        <div class="form-group has-feedback">
-                            <input type="text" class="form-control login-field custom-rounded"
+                        <div class="form-group has-feedback {% if form.email.errors %}has-error{% endif %}">
+                            <input type="email" class="form-control login-field custom-rounded"
                                    name="email" placeholder="Email"
-                                   title="Email" autocomplete="off">
+                                   title="Email" autocomplete="off" required>
                             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                            {% if form.email.errors %}
+                                <span class="help-block">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </span>
+                            {% endif %}
                         </div>
 
-                        <div class="form-group has-feedback">
+                        <div class="form-group has-feedback {% if form.password1.errors %}has-error{% endif %}">
                             <input type="password" class="form-control login-field custom-rounded" name="password1"
                                    placeholder="Password" title="Password"
-                                   autocomplete="off">
+                                   autocomplete="off" required>
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                            {% if form.password1.errors %}
+                                <span class="help-block">
+                                    {% for error in form.password1.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </span>
+                            {% endif %}
                         </div>
 
-                        <div class="form-group has-feedback">
-                            <input type="password" class="form-control" name="password2"
+                        <div class="form-group has-feedback {% if form.password2.errors %}has-error{% endif %}">
+                            <input type="password" class="form-control login-field custom-rounded" name="password2"
                                    placeholder="Confirm Password"
-                                   title="Confirm Password" autocomplete="off">
+                                   title="Confirm Password" autocomplete="off" required>
                             <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+                            {% if form.password2.errors %}
+                                <span class="help-block">
+                                    {% for error in form.password2.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </span>
+                            {% endif %}
                         </div>
 
-                        <div class="form-group has-feedback">
-                            <select name="country" class="form-control">
+                        <div class="form-group has-feedback {% if form.country.errors %}has-error{% endif %}">
+                            <select name="country" class="form-control custom-rounded" required>
                                 <option value="">Select your country</option>
                                 {% for country in countries %}
                                     <option value="{{ country.id }}">{{ country.name }}</option>
                                 {% endfor %}
                             </select>
+                            {% if form.country.errors %}
+                                <span class="help-block">
+                                    {% for error in form.country.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </span>
+                            {% endif %}
                         </div>
 
                         <button type="submit" id="buttonSubmit" class="btn btn-block btn-lg btn-main custom-rounded">
                             Sign up
                         </button>
+
+                        <div class="text-center margin-top-15">
+                            <p>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+{% endblock %}
+
+{% block css %}
+<style>
+    .help-block {
+        color: #a94442;
+        margin-top: 5px;
+    }
+    .has-error .form-control {
+        border-color: #a94442;
+    }
+    .has-error .form-control-feedback {
+        color: #a94442;
+    }
+    .login-form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .custom-rounded {
+        border-radius: 4px;
+    }
+</style>
 {% endblock %}
