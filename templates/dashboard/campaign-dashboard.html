@@ -57,99 +57,106 @@
             </div>
         </div>
 
-        <!-- Campaigns Table -->
-        <div class="col-md-12 margin-top-20 margin-bottom-20">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">My Campaigns</h3>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Title</th>
-                                <th>Status</th>
-                                <th>Goal</th>
-                                <th>Raised</th>
-                                <th>Progress</th>
-                                <th>Days Left</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for campaign in campaigns %}
+        <div class="row">
+            <!-- Campaigns Table -->
+            <div class="col-md-9 margin-bottom-20">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">My Campaigns</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
                                 <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>
-                                        <a href="{% url 'campaign:campaign-detail' campaign.id %}">
-                                            {{ campaign.title|truncatechars:30 }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <span class="label label-{% if campaign.status == 'active' %}success{% elif campaign.status == 'pending' %}warning{% else %}default{% endif %}">
-                                            {{ campaign.status|title }}
-                                        </span>
-                                    </td>
-                                    <td>${{ campaign.goal|intcomma }}</td>
-                                    <td>${{ campaign.donation_set.filter.aggregate.Sum.donation.donation__sum|default:0|intcomma }}</td>
-                                    <td>
-                                        {% with total_donations=campaign.donation_set.filter.aggregate.Sum.donation.donation__sum|default:0 %}
-                                        {% with percentage=total_donations|div:campaign.goal|mul:100|floatformat:0 %}
-                                        <div class="progress" style="margin-bottom: 0;">
-                                            <div class="progress-bar" role="progressbar" 
-                                                 style="width: {{ percentage }}%;" 
-                                                 aria-valuenow="{{ percentage }}" 
-                                                 aria-valuemin="0" 
-                                                 aria-valuemax="100">
-                                                {{ percentage }}%
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Goal</th>
+                                    <th>Raised</th>
+                                    <th>Progress</th>
+                                    <th>Days Left</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for campaign in campaigns %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            <a href="{% url 'campaign:campaign-detail' campaign.id %}">
+                                                {{ campaign.title|truncatechars:30 }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span class="label label-{% if campaign.status == 'active' %}success{% elif campaign.status == 'pending' %}warning{% else %}default{% endif %}">
+                                                {{ campaign.status|title }}
+                                            </span>
+                                        </td>
+                                        <td>${{ campaign.goal|intcomma }}</td>
+                                        <td>${{ campaign.donation_set.filter.aggregate.Sum.donation.donation__sum|default:0|intcomma }}</td>
+                                        <td>
+                                            {% with total_donations=campaign.donation_set.filter.aggregate.Sum.donation.donation__sum|default:0 %}
+                                            {% with percentage=total_donations|div:campaign.goal|mul:100|floatformat:0 %}
+                                            <div class="progress" style="margin-bottom: 0;">
+                                                <div class="progress-bar" role="progressbar" 
+                                                    style="width: {{ percentage }}%;" 
+                                                    aria-valuenow="{{ percentage }}" 
+                                                    aria-valuemin="0" 
+                                                    aria-valuemax="100">
+                                                    {{ percentage }}%
+                                                </div>
                                             </div>
-                                        </div>
-                                        {% endwith %}
-                                        {% endwith %}
-                                    </td>
-                                    <td>{{ campaign.days_remaining }}</td>
-                                    <td>
-                                        <a href="{% url 'campaign:campaign-detail' campaign.id %}" 
-                                           class="btn btn-xs btn-info">
-                                            <i class="fa fa-eye"></i> View
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="8" class="text-center">
-                                        <p class="text-muted">No campaigns yet.</p>
-                                        <a href="{% url 'campaign:campaign-create' %}" 
-                                           class="btn btn-primary">Create Campaign</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                                            {% endwith %}
+                                            {% endwith %}
+                                        </td>
+                                        <td>{{ campaign.days_remaining }}</td>
+                                        <td>
+                                            <a href="{% url 'campaign:campaign-detail' campaign.id %}" 
+                                            class="btn btn-xs btn-info">
+                                                <i class="fa fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <p class="text-muted">No campaigns yet.</p>
+                                            <a href="{% url 'campaign:campaign-create' %}" 
+                                            class="btn btn-primary">Create Campaign</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
+                <!-- Pagination -->
+                {% if is_paginated %}
+                <div class="text-center">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            <li {% if page_obj.number == num %}class="active"{% endif %}>
+                                <a href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
             </div>
 
-            <!-- Pagination -->
-            {% if is_paginated %}
-            <div class="text-center">
-                <ul class="pagination">
-                    {% if page_obj.has_previous %}
-                        <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                    {% endif %}
-
-                    {% for num in page_obj.paginator.page_range %}
-                        <li {% if page_obj.number == num %}class="active"{% endif %}>
-                            <a href="?page={{ num }}">{{ num }}</a>
-                        </li>
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                        <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                    {% endif %}
-                </ul>
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                {% include 'includes/navbar-edit.html' %}
             </div>
-            {% endif %}
         </div>
     </div>
 {% endblock %}
